@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\SubOneCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SubOneCategoryController extends Controller
 {
@@ -30,18 +33,40 @@ class SubOneCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
+        $validator = Validator::make($request->all(), [
+            "main_category_id" => "required",
+            "category_name" => "required"
+        ]);
+        dd($request);
+        if ($validator->fails()) {
+            return response()->json(["status" => "success", "message" => "An error occurred"]);
+        }
+
+        DB::beginTransaction();
+        try {
+            $subOneCategories = new SubOneCategory();
+            $subOneCategories->main_category_id = $request->main_category_id;
+            $subOneCategories->name = $request->category_name;
+            $subOneCategories->save();
+
+            $url = route('index');
+
+            return response()->json(["status" => "success", "message" => "created successfully", "url" => $url]);
+        } catch (\Exception $exception) {
+            DB::rollback();
+            return response()->json(["status" => "error", "message" => "An error occurred"]);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\SubOneCategory  $subOneCategory
+     * @param \App\Models\SubOneCategory $subOneCategory
      * @return \Illuminate\Http\Response
      */
     public function show(SubOneCategory $subOneCategory)
@@ -52,7 +77,7 @@ class SubOneCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\SubOneCategory  $subOneCategory
+     * @param \App\Models\SubOneCategory $subOneCategory
      * @return \Illuminate\Http\Response
      */
     public function edit(SubOneCategory $subOneCategory)
@@ -63,8 +88,8 @@ class SubOneCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SubOneCategory  $subOneCategory
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\SubOneCategory $subOneCategory
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, SubOneCategory $subOneCategory)
@@ -75,7 +100,7 @@ class SubOneCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\SubOneCategory  $subOneCategory
+     * @param \App\Models\SubOneCategory $subOneCategory
      * @return \Illuminate\Http\Response
      */
     public function destroy(SubOneCategory $subOneCategory)

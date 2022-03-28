@@ -23,6 +23,6 @@ use App\Http\Controllers\SubTwoCategoryController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
 
-Route::post('/store', [MainCategoryController::class, 'store']);
-Route::post('/store', [SubOneCategoryController::class, 'store']);
-Route::post('/store', [SubTwoCategoryController::class, 'store']);
+Route::post('/store-main-category', [MainCategoryController::class, 'store']);
+Route::post('/store-sub-one-category', [SubOneCategoryController::class, 'store']);
+Route::post('/store-sub-two-category', [SubTwoCategoryController::class, 'store']);

@@ -30,9 +30,6 @@
                                     <span class="text-danger">*</span></label>
                                 <select class="form-control" id="main_category" name="main_category">
                                     <option value="" disabled hidden selected></option>
-                                    {{-- @foreach($category_types as $category_type)
-                                         <option value="{{$category_type->id}}">{{$category_type->name}}</option>
-                                     @endforeach--}}
                                 </select>
                             </div>
                             <div class="form-group" id="sub_one_category_area">
