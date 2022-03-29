@@ -23,7 +23,7 @@
                                     <div class="card-title fw-bolder">
                                         {{$product->name}}
                                     </div>
-                                    <p class="card-text">
+                                    <p class="card-text text-truncate">
                                         {{$product->description}}
                                     </p>
                                 </div>
