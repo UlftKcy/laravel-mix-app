@@ -29,7 +29,15 @@
                                 </div>
                                 <div class="card-footer d-flex justify-content-between">
                                     <span class="text-success fw-bolder">{{$product->price}} TL</span>
-                                    <button class="btn btn-danger">Add to Cart</button>
+                                    <button class="btn btn-primary">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </button>
+                                    <button class="btn btn-warning" id="btn_product_edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn btn-danger" id="btn_product_delete">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
