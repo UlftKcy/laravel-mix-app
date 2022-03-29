@@ -56,10 +56,11 @@ class MainCategoryController extends Controller
             $main_categories->uuid = Str::uuid();
             $main_categories->save();
 
+
             $url = route('index');
 
             DB::commit();
-            return response()->json(["status" => "success", "message" => "created category successfully", "url" => $url]);
+            return \response()->json(["status" => "success", "message" => "created category successfully", "url" => $url,"main_categories"=>$main_categories]);
 
         } catch (\Exception $exception) {
             DB::rollback();

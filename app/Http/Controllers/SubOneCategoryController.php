@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MainCategory;
 use App\Models\SubOneCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class SubOneCategoryController extends Controller
 {
@@ -38,11 +40,12 @@ class SubOneCategoryController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+
         $validator = Validator::make($request->all(), [
-            "main_category_id" => "required",
+            "main_category" => "required",
             "category_name" => "required"
         ]);
-        dd($request);
+
         if ($validator->fails()) {
             return response()->json(["status" => "success", "message" => "An error occurred"]);
         }
@@ -50,11 +53,14 @@ class SubOneCategoryController extends Controller
         DB::beginTransaction();
         try {
             $subOneCategories = new SubOneCategory();
-            $subOneCategories->main_category_id = $request->main_category_id;
+            $subOneCategories->main_category_id = $request->main_category;
             $subOneCategories->name = $request->category_name;
+            $subOneCategories->uuid = Str::uuid();
             $subOneCategories->save();
 
             $url = route('index');
+
+            DB::commit();
 
             return response()->json(["status" => "success", "message" => "created successfully", "url" => $url]);
         } catch (\Exception $exception) {
@@ -106,5 +112,24 @@ class SubOneCategoryController extends Controller
     public function destroy(SubOneCategory $subOneCategory)
     {
         //
+    }
+
+    /**
+     * Fetch main category
+     */
+
+    public function fetchMainCategory(Request $request): JsonResponse
+    {
+        try {
+            /** @var MainCategory $main_categories */
+            $main_categories = MainCategory::all();
+
+            return \response()->json(["status" => "success", "message" => "İşlem başarıyla tamamlandı.", "data" => [
+                "main_categories" => $main_categories
+            ]]);
+
+        } catch (\Exception $exception) {
+            return response()->json(["status" => "error", "message" => $exception->getMessage()]);
+        }
     }
 }

@@ -37,9 +37,6 @@
                                     <span class="text-danger">*</span></label>
                                 <select class="form-control" id="sub_one_category" name="sub_one_category">
                                     <option value="" disabled hidden selected></option>
-                                    {{-- @foreach($category_types as $category_type)
-                                         <option value="{{$category_type->id}}">{{$category_type->name}}</option>
-                                     @endforeach--}}
                                 </select>
                             </div>
                             <div class="form-group" id="sub_two_category_area">
@@ -47,9 +44,6 @@
                                     <span class="text-danger">*</span></label>
                                 <select class="form-control" id="sub_two_category" name="sub_two_category">
                                     <option value="" disabled hidden selected></option>
-                                    {{-- @foreach($category_types as $category_type)
-                                         <option value="{{$category_type->id}}">{{$category_type->name}}</option>
-                                     @endforeach--}}
                                 </select>
                             </div>
                             <div class="form-group" id="category_name_area">

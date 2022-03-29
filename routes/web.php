@@ -26,3 +26,6 @@ Route::get('/', [DashboardController::class, 'index'])->name('index');
 Route::post('/store-main-category', [MainCategoryController::class, 'store']);
 Route::post('/store-sub-one-category', [SubOneCategoryController::class, 'store']);
 Route::post('/store-sub-two-category', [SubTwoCategoryController::class, 'store']);
+
+Route::post('/fetch-main-category', [SubOneCategoryController::class, 'fetchMainCategory']);
+Route::post('/fetch-sub-one-category', [SubTwoCategoryController::class, 'fetchSubOneCategory']);
