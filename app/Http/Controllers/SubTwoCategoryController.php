@@ -121,9 +121,19 @@ class SubTwoCategoryController extends Controller
 
     public function fetchSubOneCategory(Request $request): JsonResponse
     {
+        $validator = Validator::make($request->all(), [
+            "main_category_id" => "required",
+        ]);
+        if ($validator->fails()) {
+            return response()->json(["status" => "warning", "message" => "an error occurred"]);
+        }
         try {
             /** @var SubOneCategory $sub_one_categories */
-            $sub_one_categories = SubOneCategory::all();
+            $sub_one_categories = SubOneCategory::query()
+                ->select("sub_one_categories.id as id", "sub_one_categories.name as name")
+                ->join("main_categories", "main_categories.id", "=", "main_category_id")
+                ->where("main_categories.id", "=", $request->main_category_id)
+                ->get();
 
             return \response()->json(["status" => "success", "message" => "İşlem başarıyla tamamlandı.", "data" => [
                 "sub_one_categories" => $sub_one_categories

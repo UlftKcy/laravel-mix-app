@@ -10,7 +10,7 @@
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Add Product</a>
+                    <a class="nav-link" href="#" id="btn_add_product_modal" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</a>
                 </li>
             </ul>
             {{-- <form class="form-inline my-2 my-lg-0">

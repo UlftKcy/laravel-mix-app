@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MainCategoryController;
 use App\Http\Controllers\SubOneCategoryController;
 use App\Http\Controllers\SubTwoCategoryController;
+use App\Http\Controllers\ProductsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,15 @@ use App\Http\Controllers\SubTwoCategoryController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('index');
 
+// add category
 Route::post('/store-main-category', [MainCategoryController::class, 'store']);
 Route::post('/store-sub-one-category', [SubOneCategoryController::class, 'store']);
 Route::post('/store-sub-two-category', [SubTwoCategoryController::class, 'store']);
-
 Route::post('/fetch-main-category', [SubOneCategoryController::class, 'fetchMainCategory']);
 Route::post('/fetch-sub-one-category', [SubTwoCategoryController::class, 'fetchSubOneCategory']);
+
+// add product
+Route::post('/product-store', [ProductsController::class, 'store']);
+Route::post('/fetch-main-categories', [ProductsController::class, 'fetchMainCategories']);
+Route::post('/fetch-sub-one-categories', [ProductsController::class, 'fetchSubOneCategories']);
+Route::post('/fetch-sub-two-categories', [ProductsController::class, 'fetchSubTwoCategories']);
