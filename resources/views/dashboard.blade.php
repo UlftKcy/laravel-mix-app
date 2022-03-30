@@ -16,7 +16,7 @@
                             <div class="card">
                                 <img src="" class="card-img-top" alt="product_image">
                                 <div class="card-body">
-                                    <div class="card-title fw-bolder">
+                                    <div class="card-title fw-bolder text-truncate">
                                         {{$product->name}}
                                     </div>
                                     <p class="card-text text-truncate">
