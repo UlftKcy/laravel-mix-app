@@ -95,7 +95,7 @@ $(document).on("change", "#add_product_sub_one_category", function () {
     })
 });
 
-$(document).on("click","#btn_product",function () {
+$(document).on("click", "#btn_product", function () {
     let form = $("#form_product")[0];
     let data = new FormData(form);
 
@@ -118,6 +118,37 @@ $(document).on("click","#btn_product",function () {
                 window.location.href = response.url;
             } else {
                 alert("hata oluştu")
+            }
+        }
+    })
+})
+
+// edit and delete product
+
+$(document).on("click", "#btn_product_update", function () {
+    let product_id = $(this).attr("data-value");
+    let form = $("#form_edit_product")[0];
+    let data = new FormData(form);
+    data.append("product_id", product_id);
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/product-update",
+        method: 'POST',
+        data:data,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.status === "success") {
+                window.location.href = response.url;
+            } else {
+                alert(response.message);
             }
         }
     })

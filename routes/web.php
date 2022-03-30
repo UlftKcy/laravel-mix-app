@@ -32,6 +32,9 @@ Route::post('/fetch-main-category', [SubOneCategoryController::class, 'fetchMain
 Route::post('/fetch-sub-one-category', [SubTwoCategoryController::class, 'fetchSubOneCategory']);
 
 // add product
+Route::get('/product-edit/{id}', [ProductsController::class, 'edit'])->name('product.edit');
+Route::post('/product-update', [ProductsController::class, 'update'])->name('product.update');
+Route::get('/product-delete/{id}', [ProductsController::class, 'destroy'])->name('product.delete');
 Route::post('/product-store', [ProductsController::class, 'store']);
 Route::post('/fetch-main-categories', [ProductsController::class, 'fetchMainCategories']);
 Route::post('/fetch-sub-one-categories', [ProductsController::class, 'fetchSubOneCategories']);

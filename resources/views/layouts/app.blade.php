@@ -14,7 +14,6 @@
 
 </head>
 <body>
-@include('layouts.partials.navbar')
 @include('sweetalert::alert')
 <div id="app">
     @yield('content')

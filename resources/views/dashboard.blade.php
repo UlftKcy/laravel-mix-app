@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    @include('layouts.partials.navbar')
     <div class="container">
         <div class="card card-custom card-shadow mt-5">
             <div class="card-header bg-warning">
@@ -13,12 +14,7 @@
                     @foreach($products as $product)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                             <div class="card">
-                                <img class="card-img" src="" alt="product_image">
-                                <div class="card-img-overlay d-flex justify-content-end">
-                                    <a href="#" class="card-link text-danger like">
-                                        <i class="fas fa-heart"></i>
-                                    </a>
-                                </div>
+                                <img src="" class="card-img-top" alt="product_image">
                                 <div class="card-body">
                                     <div class="card-title fw-bolder">
                                         {{$product->name}}
@@ -32,12 +28,12 @@
                                     <button class="btn btn-primary">
                                         <i class="fa-solid fa-cart-plus"></i>
                                     </button>
-                                    <button class="btn btn-warning" id="btn_product_edit">
+                                    <a href="{{route("product.edit",$product->id)}}" role="button" class="btn btn-warning" id="btn_product_edit">
                                         <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button class="btn btn-danger" id="btn_product_delete">
+                                    </a>
+                                    <a href="{{route("product.delete",$product->id)}}" class="btn btn-danger" id="btn_product_delete">
                                         <i class="fa-solid fa-trash-can"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -173,5 +169,5 @@
 @endsection
 @section('scripts')
     <script src="{{"/js/category.js"}}"></script>
-    <script src="{{"/js/add-product.js"}}"></script>
+    <script src="{{"/js/product.js"}}"></script>
 @endsection

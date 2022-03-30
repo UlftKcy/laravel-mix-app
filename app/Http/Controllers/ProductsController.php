@@ -96,9 +96,14 @@ class ProductsController extends Controller
      * @param \App\Models\Products $products
      * @return \Illuminate\Http\Response
      */
-    public function edit(Products $products)
+    public function edit(Products $products, $id)
     {
-        //
+        $product = Products::where("id", $id)->first();
+        $product_sub_two_category = SubTwoCategory::where("id", $product->sub_two_category_id)->first();
+        $product_sub_one_category = SubOneCategory::where("id", $product_sub_two_category->sub_one_category_id)->first();
+        $product_main_category = MainCategory::where("id", $product_sub_one_category->main_category_id)->first();
+
+        return view('edit', compact('product', 'product_sub_two_category', 'product_sub_one_category', 'product_main_category'));
     }
 
     /**
@@ -108,9 +113,39 @@ class ProductsController extends Controller
      * @param \App\Models\Products $products
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Products $products)
+    public function update(Request $request, Products $products): JsonResponse
     {
-        //
+
+        $validator = Validator::make($request->all(), [
+            "product_id" => "required",
+            "edit_product_name" => "required",
+            "edit_product_price" => "required",
+            "edit_product_quantity" => "required",
+            "edit_product_description" => "required",
+        ]);
+        if ($validator->fails()) {
+            return response()->json(["status" => "warning", "message" => "an error occurred"]);
+        }
+
+        DB::beginTransaction();
+        try {
+            /**@var Products $product */
+            $product = Products::where("id", $request->product_id)->first();
+
+            $product->name = $request->edit_product_name;
+            $product->price = $request->edit_product_price;
+            $product->quantity_in_stock = $request->edit_product_quantity;
+            $product->description = $request->edit_product_description;
+            $product->save();
+            Alert::success('Congrats', 'You\'ve Successfully Updated Product');
+            $url = route("index");
+
+            DB::commit();
+            return response()->json(["status" => "success", "message" => "successfully updated product", "url" => $url]);
+        } catch (\Exception $exception) {
+            DB::rollback();
+            return response()->json(["status" => "error", "message" => "an error occurred while updating"]);
+        }
     }
 
     /**
@@ -119,9 +154,13 @@ class ProductsController extends Controller
      * @param \App\Models\Products $products
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Products $products)
+    public function destroy($id)
     {
-        //
+        $product = Products::where("id",$id)->first();
+        if ($product != null) {
+            $product->delete();
+            return redirect()->route('index');
+        }
     }
 
     /**
