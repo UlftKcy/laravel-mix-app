@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoryTypes;
 use App\Models\MainCategory;
+use App\Models\ProductImage;
 use App\Models\Products;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -28,7 +29,10 @@ class DashboardController extends Controller
         /** @var Products $products */
         $products = Products::all();
 
-        return view('dashboard', compact('category_types','products'));
+        /** @var ProductImage $product_image */
+        $product_images = ProductImage::all();
+
+        return view('dashboard', compact('category_types', 'products', 'product_images'));
     }
 
     /**

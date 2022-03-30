@@ -24,4 +24,8 @@ class Products extends Model
     {
         return $this->belongsTo(SubTwoCategory::class);
     }
+    public function productImage()
+    {
+        return $this->hasOne(ProductImage::class);
+    }
 }

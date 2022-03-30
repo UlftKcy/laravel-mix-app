@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\MainCategory;
+use App\Models\ProductImage;
 use App\Models\Products;
 use App\Models\SubOneCategory;
 use App\Models\SubTwoCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -43,7 +45,7 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-
+        /*  dd($request->all());*/
         $validator = Validator::make($request->all(), [
             "add_product_sub_two_category" => "required",
             "product_name" => "required",
@@ -67,7 +69,25 @@ class ProductsController extends Controller
             $product->description = $request->product_description;
             $product->save();
             Alert::success('Congrats', 'You\'ve Successfully Added');
+
+            if ($request->hasFile("product_image")) {
+                $product_image = $request->file("product_image");
+
+                $imagePath = $product_image->getClientOriginalName();
+                Storage::disk("product_images")->put($imagePath, $product_image->getContent());
+
+                $product_image_file = new ProductImage();
+                $product_image_file->name = $product_image->getClientOriginalName();
+                $product_image_file->uuid = Str::uuid();
+                $product_image_file->product_id = $product->id;
+                $product_image_file->path = $imagePath;
+                $product_image_file->size = $product_image->getSize();
+                $product_image_file->ext = $product_image->getClientOriginalExtension();
+                $product_image_file->save();
+            }
+
             $url = route("index");
+
 
             DB::commit();
 
@@ -75,6 +95,7 @@ class ProductsController extends Controller
 
         } catch (\Exception $exception) {
             DB::rollback();
+            /*  dd($exception->getMessage());*/
             return response()->json(["status" => "error", "message" => "An error occurred"]);
         }
     }
@@ -156,7 +177,7 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        $product = Products::where("id",$id)->first();
+        $product = Products::where("id", $id)->first();
         if ($product != null) {
             $product->delete();
             return redirect()->route('index');

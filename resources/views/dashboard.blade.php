@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('style')
+    <link rel="stylesheet" href="{{"/css/upload-product-image.css"}}">
+@endsection
+
 @section('content')
     @include('layouts.partials.navbar')
     <div class="container">
@@ -14,8 +18,9 @@
                     @foreach($products as $product)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                             <div class="card">
-                                <img src="" class="card-img-top" alt="product_image">
-                                <div class="card-body">
+                                <img src="@foreach($product_images as $product_image)  @if($product->id === $product_image->product_id) {{ asset('product-images/'.$product_image->path) }} @endif @endforeach" class="p-2"
+                                     style="width:100%;height:200px;object-fit: cover;"/>
+                                <div class="card-body p-4">
                                     <div class="card-title fw-bolder text-truncate">
                                         {{$product->name}}
                                     </div>
@@ -101,6 +106,7 @@
             </div>
         </div>
     </div>
+
     <!-- Create Product Modal -->
     <div class="modal fade" id="addProductModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
@@ -114,6 +120,25 @@
                 <div class="modal-body">
                     <div class="card-body">
                         <form id="form_product">
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <div class="button_outer">
+                                        <div class="btn_upload">
+                                            <label for="product_image" class="col-form-label"></label>
+                                            <input type="file" name="product_image" id="product_image"
+                                                   accept=".png, .jpg, .jpeg,.doc,.docx,.xls,.xlsx,.pdf"/><i
+                                                class="fas fa-cloud-upload-alt icon-custom-color icon-md me-3"></i><span
+                                                class="fs-lg">Dosya Ekle</span>
+                                        </div>
+                                        <div class="processing_bar"></div>
+                                        <div class="success_box"></div>
+                                    </div>
+                                    <div class="error_msg text-center"></div>
+                                    <div class="uploaded_file_view" id="uploaded_view">
+                                        <span class="file_remove">X</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="add_product_main_category" class="col-form-label fs-6 text-secondary">Main Category
                                     <span class="text-danger">*</span></label>
@@ -170,4 +195,5 @@
 @section('scripts')
     <script src="{{"/js/category.js"}}"></script>
     <script src="{{"/js/product.js"}}"></script>
+    <script src="{{"/js/upload-image.js"}}"></script>
 @endsection
