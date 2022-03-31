@@ -10,6 +10,7 @@ use App\Models\SubTwoCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -124,7 +125,9 @@ class ProductsController extends Controller
         $product_sub_one_category = SubOneCategory::where("id", $product_sub_two_category->sub_one_category_id)->first();
         $product_main_category = MainCategory::where("id", $product_sub_one_category->main_category_id)->first();
 
-        return view('edit', compact('product', 'product_sub_two_category', 'product_sub_one_category', 'product_main_category'));
+        $product_image = ProductImage::where("product_id", $id)->first();
+
+        return view('edit', compact('product', 'product_sub_two_category', 'product_sub_one_category', 'product_main_category', 'product_image'));
     }
 
     /**
@@ -136,6 +139,7 @@ class ProductsController extends Controller
      */
     public function update(Request $request, Products $products): JsonResponse
     {
+
 
         $validator = Validator::make($request->all(), [
             "product_id" => "required",
@@ -159,6 +163,30 @@ class ProductsController extends Controller
             $product->description = $request->edit_product_description;
             $product->save();
             Alert::success('Congrats', 'You\'ve Successfully Updated Product');
+
+            if ($request->hasFile("product_image")) {
+
+                $existPath = "product_images" . $product->product_image;
+
+                if (File::exists($existPath)) {
+                    File::delete($existPath);
+                }
+
+                $product_image = $request->file("product_image");
+
+                $imagePath = $product_image->getClientOriginalName();
+
+                Storage::disk("product_images")->put($imagePath, $product_image->getContent());
+
+                $product_image_file = new ProductImage();
+                $product_image_file->name = $product_image->getClientOriginalName();
+                $product_image_file->uuid = Str::uuid();
+                $product_image_file->product_id = $product->id;
+                $product_image_file->path = $imagePath;
+                $product_image_file->size = $product_image->getSize();
+                $product_image_file->ext = $product_image->getClientOriginalExtension();
+                $product_image_file->save();
+            }
             $url = route("index");
 
             DB::commit();
