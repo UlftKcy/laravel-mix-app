@@ -18,7 +18,7 @@
                     @foreach($products as $product)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                             <div class="card">
-                                <img src="@if($product->path !== null) {{ asset('product-images/'.$product->path) }} @endif"
+                                <img src="@if($product->path !== null) {{ asset('product-images/'.$product->path) }} @else {{ asset('/product-images/default.jpg') }} @endif"
                                     class="p-2"
                                     style="width:100%;height:200px;object-fit: cover;"/>
                                 <div class="card-body p-4">

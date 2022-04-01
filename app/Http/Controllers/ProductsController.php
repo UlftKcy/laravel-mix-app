@@ -81,14 +81,7 @@ class ProductsController extends Controller
                 $imagePath = $product_image->getClientOriginalName();
                 Storage::disk("product_images")->put($imagePath, $product_image->getContent());
 
-                $product_image_file = new ProductImage();
-                $product_image_file->name = $product_image->getClientOriginalName();
-                $product_image_file->uuid = Str::uuid();
-                $product_image_file->product_id = $product->id;
-                $product_image_file->path = $imagePath;
-                $product_image_file->size = $product_image->getSize();
-                $product_image_file->ext = $product_image->getClientOriginalExtension();
-                $product_image_file->save();
+                $this->ProductImage($product_image, $product, $imagePath);
             }
 
             /** @var  $product_query */
@@ -198,14 +191,7 @@ class ProductsController extends Controller
 
                 Storage::disk("product_images")->put($imagePath, $product_image->getContent());
 
-                $product_image_file = new ProductImage();
-                $product_image_file->name = $product_image->getClientOriginalName();
-                $product_image_file->uuid = Str::uuid();
-                $product_image_file->product_id = $product->id;
-                $product_image_file->path = $imagePath;
-                $product_image_file->size = $product_image->getSize();
-                $product_image_file->ext = $product_image->getClientOriginalExtension();
-                $product_image_file->save();
+                $this->ProductImage($product_image, $product, $imagePath);
             }
             $url = route("index");
 
@@ -310,5 +296,23 @@ class ProductsController extends Controller
         } catch (Exception $exception) {
             return response()->json(["status" => "error", "message" => $exception->getMessage()]);
         }
+    }
+
+    /**
+     * @param $product_image
+     * @param Products $product
+     * @param string $imagePath
+     * @return void
+     */
+    public function ProductImage($product_image, Products $product, string $imagePath): void
+    {
+        $product_image_file = new ProductImage();
+        $product_image_file->name = $product_image->getClientOriginalName();
+        $product_image_file->uuid = Str::uuid();
+        $product_image_file->product_id = $product->id;
+        $product_image_file->path = $imagePath;
+        $product_image_file->size = $product_image->getSize();
+        $product_image_file->ext = $product_image->getClientOriginalExtension();
+        $product_image_file->save();
     }
 }

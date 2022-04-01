@@ -158,8 +158,6 @@ $(document).on("click", "#btn_product", function () {
                         confirmButton: "btn font-weight-bold btn-light"
                     },
                 });
-
-
                 let product = response.data.product_item;
                 let html = productHtml(product);
 
@@ -167,7 +165,16 @@ $(document).on("click", "#btn_product", function () {
                 $("#addProductModal").modal("toggle");
 
             } else {
-                alert("hata oluştu")
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
             }
         }
     })
@@ -196,9 +203,28 @@ $(document).on("click", "#btn_product_update", function () {
         contentType: false,
         success: function (response) {
             if (response.status === "success") {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
                 window.location.href = response.url;
             } else {
-                alert(response.message);
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
             }
         }
     })
