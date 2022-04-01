@@ -95,6 +95,39 @@ $(document).on("change", "#add_product_sub_one_category", function () {
     })
 });
 
+function productHtml(product) {
+    let html = '<div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">\n' +
+        '                            <div class="card">\n' +
+        '                                <img src="/product-images/' + product.path + '"\n' +
+        '                                    class="p-2"\n' +
+        '                                    style="width:100%;height:200px;object-fit: cover;"/>\n' +
+        '                                <div class="card-body p-4">\n' +
+        '                                    <div class="card-title fw-bolder text-truncate">\n' +
+        '                                        ' + product.name + '\n' +
+        '                                    </div>\n' +
+        '                                    <p class="card-text text-truncate">\n' +
+        '                                        ' + product.description + '\n' +
+        '                                    </p>\n' +
+        '                                </div>\n' +
+        '                                <div class="card-footer d-flex justify-content-between">\n' +
+        '                                    <span class="text-success fw-bolder">' + product.price + ' TL</span>\n' +
+        '                                    <button class="btn btn-primary">\n' +
+        '                                        <i class="fa-solid fa-cart-plus"></i>\n' +
+        '                                    </button>\n' +
+        '                                    <a href="product-edit/' + product.id + '" role="button"\n' +
+        '                                       class="btn btn-warning" id="btn_product_edit">\n' +
+        '                                        <i class="fa-solid fa-pen-to-square"></i>\n' +
+        '                                    </a>\n' +
+        '                                    <a href="product-delete/' + product.id + '" class="btn btn-danger"\n' +
+        '                                       id="btn_product_delete">\n' +
+        '                                        <i class="fa-solid fa-trash-can"></i>\n' +
+        '                                    </a>\n' +
+        '                                </div>\n' +
+        '                            </div>\n' +
+        '                        </div>'
+    return html;
+}
+
 $(document).on("click", "#btn_product", function () {
     let form = $("#form_product")[0];
     let data = new FormData(form);
@@ -115,7 +148,24 @@ $(document).on("click", "#btn_product", function () {
         cache: false,
         success: function (response) {
             if (response.status === "success") {
-                window.location.href = response.url;
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+
+
+                let product = response.data.product_item;
+                let html = productHtml(product);
+
+                $("#product_area").append(html);
+                $("#addProductModal").modal("toggle");
+
             } else {
                 alert("hata oluştu")
             }
@@ -140,7 +190,7 @@ $(document).on("click", "#btn_product_update", function () {
     $.ajax({
         url: "/product-update",
         method: 'POST',
-        data:data,
+        data: data,
         dataType: 'json',
         processData: false,
         contentType: false,

@@ -26,13 +26,17 @@ class DashboardController extends Controller
         /** @var CategoryTypes $category_types */
         $category_types = CategoryTypes::all();
 
-        /** @var Products $products */
-        $products = Products::all();
+        /** @var  $products */
+        $products = Products::query()
+            ->select("products.name as name", "products.description as description")
+            ->addSelect("products.price as price", "products.id as id")
+            ->addSelect("product_images.path as path")
+            ->leftJoin("product_images", "product_images.product_id", "=", "products.id")
+            ->whereNull("product_images.deleted_at")
+            ->get();
 
-        /** @var ProductImage $product_image */
-        $product_images = ProductImage::all();
 
-        return view('dashboard', compact('category_types', 'products', 'product_images'));
+        return view('dashboard', compact('category_types', 'products'));
     }
 
     /**

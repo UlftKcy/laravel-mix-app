@@ -14,13 +14,11 @@
                 </div>
             </div>
             <div class="card-body p-4">
-                <div class="row">
+                <div class="row" id="product_area">
                     @foreach($products as $product)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                             <div class="card">
-                                @dd($product_images)
-                                <img
-                                    src="@foreach($product_images as $product_image)  @if($product->id === $product_image->product_id) {{ asset('product-images/'.$product_image->path) }} @endif @endforeach"
+                                <img src="@if($product->path !== null) {{ asset('product-images/'.$product->path) }} @endif"
                                     class="p-2"
                                     style="width:100%;height:200px;object-fit: cover;"/>
                                 <div class="card-body p-4">
