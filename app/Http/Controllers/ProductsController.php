@@ -99,7 +99,7 @@ class ProductsController extends Controller
                 "product_item" => $product_query
             ]]);
 
-        } catch (Exception $exception) {
+        } catch (Exception $exception) { 
             DB::rollback();
             /*  dd($exception->getMessage());*/
             return response()->json(["status" => "error", "message" => "An error occurred"]);

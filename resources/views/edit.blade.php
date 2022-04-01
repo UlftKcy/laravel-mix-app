@@ -91,6 +91,7 @@
                                       cols="30" rows="3"
                                       placeholder="Enter description...">{{$product->description}}</textarea>
                         </div>
+                    </div>
                 </form>
             </div>
             <div class="card-footer d-flex justify-content-end">
