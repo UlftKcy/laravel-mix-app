@@ -230,3 +230,58 @@ $(document).on("click", "#btn_product_update", function () {
     })
 })
 
+
+// basket operations
+
+$(document).on("click","#btn_add_product_to_basket",function () {
+    let product_id = $(this).attr("data-value");
+    let form_data = new FormData();
+    form_data.append("product_id",product_id);
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/add-product-to-basket",
+        method: 'POST',
+        data: form_data,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.status === "success") {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+
+                let product_count_in_basket_count = $("#product_count_in_basket").text();
+                product_count_in_basket_count = parseInt(product_count_in_basket_count+"1");
+                $("#product_count_in_basket").text(product_count_in_basket_count);
+
+
+            } else {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+            }
+        }
+    })
+
+})
+

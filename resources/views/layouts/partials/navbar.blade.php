@@ -7,6 +7,9 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto w-100 justify-content-end">
                 <li class="nav-item active">
+                    <a class="nav-link d-flex align-items-center btn btn-secondary px-3 rounded text-white" href="#">Basket<span class="badge bg-warning ms-3" id="product_count_in_basket">0</span></a>
+                </li>
+                <li class="nav-item active">
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</a>
                 </li>
                 <li class="nav-item">

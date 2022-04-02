@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property mixed quantity_in_stock
  * @property mixed sub_two_category_id
  */
-
 class Products extends Model
 {
     use HasFactory, SoftDeletes;
@@ -24,8 +23,14 @@ class Products extends Model
     {
         return $this->belongsTo(SubTwoCategory::class);
     }
+
     public function productImage()
     {
         return $this->hasOne(ProductImage::class);
+    }
+
+    public function baskets()
+    {
+        return $this->hasMany(Basket::class);
     }
 }

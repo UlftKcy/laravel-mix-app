@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="card-footer d-flex justify-content-between">
                                     <span class="text-success fw-bolder">{{$product->price}} TL</span>
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary" id="btn_add_product_to_basket" data-value="{{$product->id}}">
                                         <i class="fa-solid fa-cart-plus"></i>
                                     </button>
                                     <a href="{{route("product.edit",$product->id)}}" role="button"

@@ -6,6 +6,7 @@ use App\Http\Controllers\MainCategoryController;
 use App\Http\Controllers\SubOneCategoryController;
 use App\Http\Controllers\SubTwoCategoryController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\BasketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,3 +40,8 @@ Route::post('/product-store', [ProductsController::class, 'store']);
 Route::post('/fetch-main-categories', [ProductsController::class, 'fetchMainCategories']);
 Route::post('/fetch-sub-one-categories', [ProductsController::class, 'fetchSubOneCategories']);
 Route::post('/fetch-sub-two-categories', [ProductsController::class, 'fetchSubTwoCategories']);
+
+
+// basket operations
+
+Route::post('/add-product-to-basket',[BasketController::class,'store']);
