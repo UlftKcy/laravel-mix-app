@@ -291,8 +291,9 @@ $(document).on("click", ".btn-increase", function () {
 $(document).on("click", "#btn_add_product_to_basket", function () {
     let product_id = $(this).attr("data-value");
     let product_count_box = $(this).closest("div");
-    let form_data = new FormData();
     let product_quantity = product_count_box.find(".product_quantity").val();
+
+    let form_data = new FormData();
     form_data.append("product_id", product_id);
     form_data.append("product_quantity", product_quantity);
 
@@ -321,12 +322,10 @@ $(document).on("click", "#btn_add_product_to_basket", function () {
                         confirmButton: "btn font-weight-bold btn-light"
                     },
                 });
-
-                /*let product_count_in_basket_count = $("#product_count_in_basket").text();
-                product_count_in_basket_count = parseInt(product_count_in_basket_count+"1");
-                $("#product_count_in_basket").text(product_count_in_basket_count);*/
-                /* window.href.location = response.url;*/
-
+                let product_count_in_basket = $("#product_count_in_basket")
+                let product_count_in_basket_count = product_count_in_basket.text();
+                product_count_in_basket_count = parseInt(product_count_in_basket_count)+parseInt(product_quantity);
+                product_count_in_basket.text(product_count_in_basket_count);
 
             } else {
                 Swal.fire({

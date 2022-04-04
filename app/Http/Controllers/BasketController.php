@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Psy\Util\Json;
 
 class BasketController extends Controller
 {
@@ -52,30 +53,34 @@ class BasketController extends Controller
         DB::beginTransaction();
 
         try {
-            if ($request->product_quantity == 0){
-                return response()->json(["status" => "success", "message" => "Quantity must be more than 1"]);
-            }
-            $product = new Basket();
-            $product->uuid = Str::uuid();
-            $product->product_id = $request->product_id;
-            $product->quantity = $request->product_quantity;
-           /* $product->save();*/
 
-            /** @var Products $product_in_basket */
-            $product_in_basket = Products::query()
-                ->select("products.name as name", "products.description as description")
-                ->addSelect("products.price as price", "products.quantity_in_stock as quantity_in_stock", "products.id as id")
-                ->leftJoin("baskets", "baskets.product_id", "=", "products.id")
-                ->where("products.id", $request->product_id)
-                ->first();
+            if ($request->product_quantity == 0) {
+                return response()->json(["status" => "warning", "message" => "Quantity must be more than 1"]);
+            }
+
+            /** @var Basket $selected_product */
+            $selected_product = Basket::query()->where("product_id", $request->product_id)->first();
+
+            if ($selected_product !== null) {
+                $total_quantity = $selected_product->quantity + $request->product_quantity;
+                $selected_product->quantity = $total_quantity;
+                $selected_product->update();
+            } else {
+                $product = new Basket();
+                $product->uuid = Str::uuid();
+                $product->product_id = $request->product_id;
+                $product->quantity = $request->product_quantity;
+                $product->save();
+            }
 
             DB::commit();
 
-            return response()->json(["status" => "success", "message" => "successfully added to basket", "data" => ["product_in_basket" => $product_in_basket]]);
+            return response()->json(["status" => "success", "message" => "successfully added to basket"]);
 
 
         } catch (\Exception $exception) {
             DB::rollBack();
+            dd($exception->getMessage());
             return response()->json(["status" => "error", "message" => "An error occurred"]);
         }
     }

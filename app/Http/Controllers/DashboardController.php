@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Basket;
 use App\Models\CategoryTypes;
 use App\Models\MainCategory;
 use App\Models\ProductImage;
@@ -26,17 +27,27 @@ class DashboardController extends Controller
         /** @var CategoryTypes $category_types */
         $category_types = CategoryTypes::all();
 
-        /** @var  $products */
+        /** @var Products $products */
         $products = Products::query()
             ->select("products.name as name", "products.description as description")
-            ->addSelect("products.price as price", "products.id as id","products.uuid as uuid")
+            ->addSelect("products.price as price", "products.id as id", "products.uuid as uuid")
             ->addSelect("product_images.path as path")
             ->leftJoin("product_images", "product_images.product_id", "=", "products.id")
             ->whereNull("product_images.deleted_at")
             ->get();
 
+        /** @var Basket $basket_quantity */
+        $basket_quantity = Basket::query()
+            ->select("baskets.product_id as product_id", "baskets.quantity as quantity")
+            ->get();
 
-        return view('dashboard', compact('category_types', 'products'));
+        $total_basket_quantity = 0;
+        foreach ($basket_quantity as $item_quantity) {
+            $data_quantity = $item_quantity->quantity;
+            $total_basket_quantity = $total_basket_quantity + (int)$data_quantity;
+        }
+
+        return view('dashboard', compact('category_types', 'products', 'total_basket_quantity'));
     }
 
     /**
