@@ -24,13 +24,18 @@
                                     {{$basket_product->name}}
                                 </div>
                                 <div class="col-3">
-                                    <div class="input-group bootstrap-touchspin bootstrap-touchspin-injected" style="width:150px;">
-                                        <button class="btn btn-sm btn-outline-secondary bootstrap-touchspin-down rounded-0 btn-decrease"
-                                                type="button">-
+                                    <div class="input-group bootstrap-touchspin bootstrap-touchspin-injected"
+                                         style="width:150px;">
+                                        <button
+                                            class="btn btn-sm btn-outline-secondary bootstrap-touchspin-down rounded-0 btn-decrease"
+                                            type="button">-
                                         </button>
-                                        <input type="text" name="product_count" class="form-control text-center border border-dark product_quantity" value="{{$basket_product->quantity}}"/>
-                                        <button class="btn btn-sm btn-outline-secondary bootstrap-touchspin-up rounded-0 btn-increase"
-                                                type="button">+
+                                        <input type="text" name="product_count_in_basket"
+                                               class="form-control text-center border border-dark product_quantity_in_basket"
+                                               value="{{$basket_product->quantity}}"/>
+                                        <button
+                                            class="btn btn-sm btn-outline-secondary bootstrap-touchspin-up rounded-0 btn-increase"
+                                            type="button">+
                                         </button>
                                     </div>
                                 </div>
