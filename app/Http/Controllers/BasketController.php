@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Basket;
 use App\Models\Products;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -37,26 +38,30 @@ class BasketController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            "product_id" => "required"
+            "product_id" => "required",
+            "product_quantity" => "required",
         ]);
 
         if ($validator->fails()) {
-            return response()->json(["status" => "success", "message" => "An error occurred"]);
+            return response()->json(["status" => "warning", "message" => "An error occurred"]);
         }
 
         DB::beginTransaction();
 
         try {
+            if ($request->product_quantity == 0){
+                return response()->json(["status" => "success", "message" => "Quantity must be more than 1"]);
+            }
             $product = new Basket();
             $product->uuid = Str::uuid();
             $product->product_id = $request->product_id;
-            $product->quantity = "1";
-            $product->save();
+            $product->quantity = $request->product_quantity;
+           /* $product->save();*/
 
-            /** @var Products product_in_basket */
+            /** @var Products $product_in_basket */
             $product_in_basket = Products::query()
                 ->select("products.name as name", "products.description as description")
                 ->addSelect("products.price as price", "products.quantity_in_stock as quantity_in_stock", "products.id as id")

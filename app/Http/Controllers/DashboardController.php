@@ -29,7 +29,7 @@ class DashboardController extends Controller
         /** @var  $products */
         $products = Products::query()
             ->select("products.name as name", "products.description as description")
-            ->addSelect("products.price as price", "products.id as id")
+            ->addSelect("products.price as price", "products.id as id","products.uuid as uuid")
             ->addSelect("product_images.path as path")
             ->leftJoin("product_images", "product_images.product_id", "=", "products.id")
             ->whereNull("product_images.deleted_at")

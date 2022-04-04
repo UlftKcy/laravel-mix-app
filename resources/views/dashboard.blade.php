@@ -18,10 +18,12 @@
                     @foreach($products as $product)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                             <div class="card">
-                                <img src="@if($product->path !== null) {{ asset('product-images/'.$product->path) }} @else {{ asset('/product-images/default.jpg') }} @endif"
+                                <img
+                                    src="@if($product->path !== null) {{ asset('product-images/'.$product->path) }} @else {{ asset('/product-images/default.jpg') }} @endif"
                                     class="p-2"
                                     style="width:100%;height:200px;object-fit: cover;"/>
                                 <div class="card-body p-4">
+                                    <div class="d-flex justify-content-center"><span class="text-success fw-bolder">{{$product->price}} TL</span></div>
                                     <div class="card-title fw-bolder text-truncate">
                                         {{$product->name}}
                                     </div>
@@ -29,19 +31,32 @@
                                         {{$product->description}}
                                     </p>
                                 </div>
-                                <div class="card-footer d-flex justify-content-between">
-                                    <span class="text-success fw-bolder">{{$product->price}} TL</span>
-                                    <button class="btn btn-primary" id="btn_add_product_to_basket" data-value="{{$product->id}}">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </button>
-                                    <a href="{{route("product.edit",$product->id)}}" role="button"
-                                       class="btn btn-warning" id="btn_product_edit">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <a href="{{route("product.delete",$product->id)}}" class="btn btn-danger"
-                                       id="btn_product_delete">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </a>
+                                <div class="card-footer d-flex flex-column">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <button class="btn btn-primary" id="btn_add_product_to_basket"
+                                                data-value="{{$product->id}}">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                        </button>
+                                        <div class="input-group bootstrap-touchspin bootstrap-touchspin-injected" style="width:150px;">
+                                            <button class="btn btn-sm btn-outline-secondary bootstrap-touchspin-down rounded-0 btn-decrease"
+                                                    type="button">-
+                                            </button>
+                                            <input type="text" name="product_count" class="form-control text-center border border-dark product_quantity" value="0"/>
+                                            <button class="btn btn-sm btn-outline-secondary bootstrap-touchspin-up rounded-0 btn-increase"
+                                                    type="button">+
+                                            </button>
+                                        </div>
+                                    </div>
+                                  <div class="d-flex justify-content-end">
+                                      <a href="{{route("product.edit",$product->id)}}" role="button"
+                                         class="btn btn-warning me-3" id="btn_product_edit">
+                                          <i class="fa-solid fa-pen-to-square"></i>
+                                      </a>
+                                      <a href="{{route("product.delete",$product->id)}}" class="btn btn-danger"
+                                         id="btn_product_delete">
+                                          <i class="fa-solid fa-trash-can"></i>
+                                      </a>
+                                  </div>
                                 </div>
                             </div>
                         </div>

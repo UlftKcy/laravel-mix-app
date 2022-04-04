@@ -87,7 +87,7 @@ class ProductsController extends Controller
             /** @var  $product_query */
             $product_query = Products::query()
                 ->select("products.name as name", "products.description as description")
-                ->addSelect("products.price as price", "products.id as id")
+                ->addSelect("products.price as price", "products.id as id", "products.uuid as uuid")
                 ->addSelect("product_images.path as path")
                 ->leftJoin("product_images", "product_images.product_id", "=", "products.id")
                 ->where("products.id", "=", $product->id)
@@ -99,7 +99,7 @@ class ProductsController extends Controller
                 "product_item" => $product_query
             ]]);
 
-        } catch (Exception $exception) { 
+        } catch (Exception $exception) {
             DB::rollback();
             /*  dd($exception->getMessage());*/
             return response()->json(["status" => "error", "message" => "An error occurred"]);
