@@ -44,4 +44,5 @@ Route::post('/fetch-sub-two-categories', [ProductsController::class, 'fetchSubTw
 
 // basket operations
 
+Route::get('/basket',[BasketController::class,'index'])->name('basket');
 Route::post('/add-product-to-basket',[BasketController::class,'store']);

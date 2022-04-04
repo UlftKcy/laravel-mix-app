@@ -20,7 +20,19 @@ class BasketController extends Controller
      */
     public function index()
     {
-        //
+
+        /** @var Products $basket_products */
+
+        $basket_products = Products::query()
+            ->select("products.name as name", "products.description as description")
+            ->addSelect("products.price as price", "products.id as id","products.quantity_in_stock as quantity_in_stock")
+            ->addSelect("baskets.quantity as quantity")
+            ->leftJoin("baskets", "baskets.product_id", "=", "products.id")
+            ->whereNull("baskets.deleted_at")
+            ->get();
+
+
+        return view('basket',compact('basket_products'));
     }
 
     /**
