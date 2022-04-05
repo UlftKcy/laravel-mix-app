@@ -313,14 +313,6 @@ $(document).on("click", ".btn-increase", function () {
         $(this).prev().prev("button").prop("disabled", false);
     }
 });
-$(document).on("click", ".btn-basket-increase", function () {
-    let chosen_input = $(this).prev("input");
-    let chosen_input_val = parseInt(chosen_input.val()) + 1;
-    chosen_input.val(chosen_input_val);
-    if (chosen_input_val > 0) {
-        $(this).prev().prev("button").prop("disabled", false);
-    }
-});
 
 // basket operations
 
@@ -454,6 +446,7 @@ $(document).on("click", ".btn-basket-decrease", function () {
 })
 
 $(document).on("click", ".btn-basket-increase", function () {
+    let chosen_input = $(this).prev("input");
     let product_id = $(this).attr("data-value");
 
     let form_data = new FormData();
@@ -484,20 +477,31 @@ $(document).on("click", ".btn-basket-increase", function () {
                         confirmButton: "btn font-weight-bold btn-light"
                     },
                 });
+
+                let chosen_input_val = parseInt(chosen_input.val()) + 1;
+                chosen_input.val(chosen_input_val);
+                if (chosen_input_val > 0) {
+                    $(this).prev().prev("button").prop("disabled", false);
+                }
+
+                let product_id = response.data.product.id;
+                let product_price = response.data.product.price;
+
                 let total_in_basket_quantity = $("#total_in_basket_quantity");
                 let total_quantity = total_in_basket_quantity.text();
                 total_quantity = parseInt(total_quantity) + 1;
                 total_in_basket_quantity.text(total_quantity + " adet");
 
-                let total_row_price = $(`#total_row_price-${response.data.product.id}`);
-                let row_price = total_row_price.text();
-                row_price = parseInt(row_price) + parseInt(response.data.product.price);
-                total_row_price.text(row_price + " TL");
-
                 let total_in_basket_price = $("#total_in_basket_price");
                 let total_price = total_in_basket_price.text();
-                total_price = parseInt(total_price) + parseInt(response.data.product.price);
+                total_price = parseInt(total_price) + parseInt(product_price);
                 total_in_basket_price.text(total_price + " TL");
+
+                let total_row_price = $(`#total_row_price-${product_id}`);
+                let row_price = total_row_price.text();
+                row_price = parseInt(row_price) + parseInt(product_price);
+                total_row_price.text(row_price + " TL");
+
 
             } else {
                 Swal.fire({
@@ -510,6 +514,7 @@ $(document).on("click", ".btn-basket-increase", function () {
                         confirmButton: "btn font-weight-bold btn-light"
                     },
                 });
+
             }
         }
     })

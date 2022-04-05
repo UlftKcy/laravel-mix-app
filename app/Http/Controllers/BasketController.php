@@ -84,19 +84,32 @@ class BasketController extends Controller
                 return response()->json(["status" => "warning", "message" => "Quantity must be more than 1"]);
             }
 
+            // sepete eklenen değer, stok değeri ile karşılaştırılmaktadır.
+            /** @var Products $product */
+            $product = Products::query()->where("id", $request->product_id)->first();
+            $product_quantity_in_stock = $product->quantity_in_stock;
+
+            if ((int)$request->product_quantity > (int)$product_quantity_in_stock) {
+                return response()->json(["status" => "warning", "message" => "The quantity you entered must not  be more than the total stock amount."]);
+            }
+
+            // ürün sepete eklenmektedir.
             /** @var Basket $selected_product */
             $selected_product = Basket::query()->where("product_id", $request->product_id)->first();
 
             if ($selected_product !== null) {
                 $total_quantity = $selected_product->quantity + $request->product_quantity;
+                if ((int)$total_quantity > (int)$product_quantity_in_stock) {
+                    return response()->json(["status" => "warning", "message" => "The quantity you entered must not  be more than the total stock amount."]);
+                }
                 $selected_product->quantity = $total_quantity;
                 $selected_product->update();
             } else {
-                $product = new Basket();
-                $product->uuid = Str::uuid();
-                $product->product_id = $request->product_id;
-                $product->quantity = $request->product_quantity;
-                $product->save();
+                $selected_product = new Basket();
+                $selected_product->uuid = Str::uuid();
+                $selected_product->product_id = $request->product_id;
+                $selected_product->quantity = $request->product_quantity;
+                $selected_product->save();
             }
 
             DB::commit();
@@ -230,19 +243,25 @@ class BasketController extends Controller
                 ->select("products.id as id", "products.price as price", "products.quantity_in_stock as quantity_in_stock")
                 ->where("products.id", "=", $request->product_id)
                 ->first();
+            $product_quantity_in_stock = $product->quantity_in_stock;
 
             /** @var Basket $selected_product */
             $selected_product = Basket::query()->where("product_id", $request->product_id)->first();
             if ($selected_product !== null) {
                 $selected_product_quantity = $selected_product->quantity + 1;
-                $selected_product->quantity = $selected_product_quantity;
-                $selected_product->update();
+                if ((int)$selected_product_quantity > (int)$product_quantity_in_stock) {
+                    return response()->json(["status" => "warning", "message" => "The quantity you entered must not  be more than the total stock amount.","data"=>[
+                        "product" => $product
+                    ]]);
+                } else {
+                    $selected_product->quantity = $selected_product_quantity;
+                    $selected_product->update();
+                    return response()->json(["status" => "success", "message" => "İşlem başarıyla tamamlandı.", "data" => [
+                        "product" => $product,
+                        "selected_product" => $selected_product
+                    ]]);
+                }
             }
-
-            return response()->json(["status" => "success", "message" => "İşlem başarıyla tamamlandı.", "data" => [
-                "product" => $product,
-                "selected_product" => $selected_product
-            ]]);
         } catch (Exception $exception) {
             return response()->json(["status" => "error", "message" => $exception->getMessage()]);
         }
