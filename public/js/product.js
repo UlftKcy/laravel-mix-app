@@ -257,7 +257,27 @@ $(document).on("keypress", "input[name=product_count]", function (e) {
         e.preventDefault();
     }
 })
+$(document).on("keypress", "input[name=product_count_in_basket]", function (e) {
+    let this_input = $(this);
+    let this_input_val = this_input.val();
+    this_input.val(this_input_val.replace(/[^0-9\.]/g, ''));
+    if ((e.which !== 46 || this_input.val().indexOf('.') !== 1) && (e.which < 48 || e.which > 57)) {
+        e.preventDefault();
+    }
+})
 $(document).on("keyup", "input[name=product_count]", function (e) {
+    let this_input = $(this);
+    let this_input_val = this_input.val();
+    this_input.val(this_input_val);
+    if (this_input_val > 0) {
+        $(this).prev("button").prop("disabled", false);
+    }
+    if (this_input_val === "") {
+        this_input.val(0);
+        $(this).prev("button").prop("disabled", true);
+    }
+})
+$(document).on("keyup", "input[name=product_count_in_basket]", function (e) {
     let this_input = $(this);
     let this_input_val = this_input.val();
     this_input.val(this_input_val);
@@ -277,7 +297,23 @@ $(document).on("click", ".btn-decrease", function () {
         $(this).prop("disabled", true);
     }
 });
+$(document).on("click", ".btn-basket-decrease", function () {
+    let chosen_input = $(this).next("input");
+    let chosen_input_val = parseInt(chosen_input.val()) - 1;
+    chosen_input.val(chosen_input_val);
+    if (chosen_input_val === 0) {
+        $(this).prop("disabled", true);
+    }
+});
 $(document).on("click", ".btn-increase", function () {
+    let chosen_input = $(this).prev("input");
+    let chosen_input_val = parseInt(chosen_input.val()) + 1;
+    chosen_input.val(chosen_input_val);
+    if (chosen_input_val > 0) {
+        $(this).prev().prev("button").prop("disabled", false);
+    }
+});
+$(document).on("click", ".btn-basket-increase", function () {
     let chosen_input = $(this).prev("input");
     let chosen_input_val = parseInt(chosen_input.val()) + 1;
     chosen_input.val(chosen_input_val);
@@ -324,7 +360,7 @@ $(document).on("click", "#btn_add_product_to_basket", function () {
                 });
                 let product_count_in_basket = $("#product_count_in_basket")
                 let product_count_in_basket_count = product_count_in_basket.text();
-                product_count_in_basket_count = parseInt(product_count_in_basket_count)+parseInt(product_quantity);
+                product_count_in_basket_count = parseInt(product_count_in_basket_count) + parseInt(product_quantity);
                 product_count_in_basket.text(product_count_in_basket_count);
 
             } else {
@@ -341,6 +377,189 @@ $(document).on("click", "#btn_add_product_to_basket", function () {
             }
         }
     })
+})
+
+$(document).on("click", ".btn-basket-decrease", function () {
+    let product_id = $(this).attr("data-value");
+
+    let form_data = new FormData();
+    form_data.append('product_id', product_id);
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/decrease-product-count-in-basket",
+        method: 'POST',
+        data: form_data,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.status === "success") {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+
+                let total_in_basket_quantity = $("#total_in_basket_quantity");
+                let total_quantity = total_in_basket_quantity.text();
+                total_quantity = parseInt(total_quantity) - 1;
+                total_in_basket_quantity.text(total_quantity + " adet");
+
+                let total_in_basket_price = $("#total_in_basket_price");
+                let total_price = total_in_basket_price.text();
+                total_price = parseInt(total_price) - parseInt(response.data.product.price);
+                total_in_basket_price.text(total_price + " TL");
+
+                let total_row_price = $(`#total_row_price-${response.data.product.id}`);
+                let row_price = total_row_price.text();
+                row_price = parseInt(row_price) - parseInt(response.data.product.price);
+                total_row_price.text(row_price + " TL");
+
+                // remove product row from basket
+                let product_row = $(`#product_row_${response.data.product.id}`);
+                if (row_price === 0) {
+                    product_row.remove();
+                }
+
+            } else {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+            }
+        }
+    })
+
 
 })
 
+$(document).on("click", ".btn-basket-increase", function () {
+    let product_id = $(this).attr("data-value");
+
+    let form_data = new FormData();
+    form_data.append('product_id', product_id);
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/increase-product-count-in-basket",
+        method: 'POST',
+        data: form_data,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.status === "success") {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+                let total_in_basket_quantity = $("#total_in_basket_quantity");
+                let total_quantity = total_in_basket_quantity.text();
+                total_quantity = parseInt(total_quantity) + 1;
+                total_in_basket_quantity.text(total_quantity + " adet");
+
+                let total_row_price = $(`#total_row_price-${response.data.product.id}`);
+                let row_price = total_row_price.text();
+                row_price = parseInt(row_price) + parseInt(response.data.product.price);
+                total_row_price.text(row_price + " TL");
+
+                let total_in_basket_price = $("#total_in_basket_price");
+                let total_price = total_in_basket_price.text();
+                total_price = parseInt(total_price) + parseInt(response.data.product.price);
+                total_in_basket_price.text(total_price + " TL");
+
+            } else {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+            }
+        }
+    })
+
+
+})
+
+$(document).on("click", "#btn_remove_product_from_basket", function () {
+    let product_id = $(this).attr("data-value");
+
+    let form_data = new FormData();
+    form_data.append("product_id", product_id);
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        url: "/remove-product-from-basket",
+        method: 'POST',
+        data: form_data,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.status === "success") {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+
+                window.href.location = response.href;
+
+            } else {
+                Swal.fire({
+                    icon: response.status,
+                    text: response.message,
+                    showCancelButton: false,
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light"
+                    },
+                });
+            }
+        }
+    })
+})

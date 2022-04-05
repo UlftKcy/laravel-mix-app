@@ -39,6 +39,7 @@ class DashboardController extends Controller
         /** @var Basket $basket_quantity */
         $basket_quantity = Basket::query()
             ->select("baskets.product_id as product_id", "baskets.quantity as quantity")
+            ->whereNull("baskets.deleted_at")
             ->get();
 
         $total_basket_quantity = 0;

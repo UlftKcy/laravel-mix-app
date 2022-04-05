@@ -41,8 +41,9 @@ Route::post('/fetch-main-categories', [ProductsController::class, 'fetchMainCate
 Route::post('/fetch-sub-one-categories', [ProductsController::class, 'fetchSubOneCategories']);
 Route::post('/fetch-sub-two-categories', [ProductsController::class, 'fetchSubTwoCategories']);
 
-
 // basket operations
-
-Route::get('/basket',[BasketController::class,'index'])->name('basket');
-Route::post('/add-product-to-basket',[BasketController::class,'store']);
+Route::get('/basket', [BasketController::class, 'index'])->name('basket');
+Route::post('/add-product-to-basket', [BasketController::class, 'store']);
+Route::post('/decrease-product-count-in-basket', [BasketController::class, 'decreaseProductCountInBasket']);
+Route::post('/increase-product-count-in-basket', [BasketController::class, 'increaseProductCountInBasket']);
+Route::post('/remove-product-from-basket', [BasketController::class, 'destroy']);
