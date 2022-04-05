@@ -411,6 +411,9 @@ $(document).on("click", ".btn-basket-decrease", function () {
                     },
                 });
 
+                let product_price = response.data.product.price;
+                let product_id = response.data.product.id;
+
                 let total_in_basket_quantity = $("#total_in_basket_quantity");
                 let total_quantity = total_in_basket_quantity.text();
                 total_quantity = parseInt(total_quantity) - 1;
@@ -418,16 +421,16 @@ $(document).on("click", ".btn-basket-decrease", function () {
 
                 let total_in_basket_price = $("#total_in_basket_price");
                 let total_price = total_in_basket_price.text();
-                total_price = parseInt(total_price) - parseInt(response.data.product.price);
+                total_price = parseInt(total_price) - parseInt(product_price);
                 total_in_basket_price.text(total_price + " TL");
 
-                let total_row_price = $(`#total_row_price-${response.data.product.id}`);
+                let total_row_price = $(`#total_row_price-${product_id}`);
                 let row_price = total_row_price.text();
-                row_price = parseInt(row_price) - parseInt(response.data.product.price);
+                row_price = parseInt(row_price) - parseInt(product_price);
                 total_row_price.text(row_price + " TL");
 
                 // remove product row from basket
-                let product_row = $(`#product_row_${response.data.product.id}`);
+                let product_row = $(`#product_row_${product_id}`);
                 if (row_price === 0) {
                     product_row.remove();
                 }
